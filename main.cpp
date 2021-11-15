@@ -11,8 +11,8 @@ using namespace cimg_library;
 #define R 17 // number of times the algorithm is repeated.
 typedef float data_t;
 typedef struct {
-	float* _SOURCE;
-	float* _HELP;
+	CImg<float> _SOURCE;
+	CImg<float> _HELP;
 	float* _DEST;
 	int _width;
 	int _height;
@@ -26,9 +26,26 @@ const char* SOURCE_IMG      = "bailarina.bmp"; // source image's file name.
 const char* HELP_IMG        = "background_V.bmp"; // aid image's file name.
 const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
-void threadTask(void* param) {
-	ThreadParams params = *((ThreadParams*) param);
-	for (uint i = 0; i < params._width * params._height; i++) {
+void threadTask(ThreadParams params) {
+	//ThreadParams params = *((ThreadParams*) param);
+	for (uint i = params._startRow; i < params._width * params._height; i++) {
+		// pointer initialization:
+
+		// source image pointers
+		float pRsrc = params._SOURCE.data();                  // red component
+		float pGsrc = pRsrc + params._height * params._width; // green component
+		float pBsrc = pGsrc + params._height * params._width; // blue component
+
+		// help image pointers
+		float pRaid = params._HELP.data();                    // red component
+		float pGaid = pRaid + params._height * params._width; // green component
+		float pBaid = pGaid + params._height * params._width; // blue component
+
+		// destination image pointers
+		float pRdest = params._DEST.data();                     // red component
+		float pGdest = pRdest + params._height * params._width; // green component
+		float pBdest = pGdest + params._height * params._width; // blue component
+
 
 		int red, blue, green; // temporal component initialization
 
@@ -58,10 +75,7 @@ int main() {
 	CImg<data_t> srcImage(SOURCE_IMG);
 	CImg<data_t> aidImage(HELP_IMG);
 
-	// Se inicializan punteros y variables.
-	data_t *pRsrc, *pGsrc, *pBsrc; // Source image's components' pointers.
-	data_t *pRaid, *pGaid, *pBaid; // Aid image's components' pointers.
-	data_t *pRdest, *pGdest, *pBdest; // Resulting image's components' pointers.
+	// Pointers and variables initialization.
 	data_t *pDstImage; // Resulting image's pointer.
 	uint width, height;
 	uint nComp;
@@ -94,22 +108,7 @@ int main() {
 		exit(1);
 	}
 
-	// pointer initialization:
-
-	// source image pointers
-	pRsrc = srcImage.data();        // red component
-	pGsrc = pRsrc + height * width; // green component
-	pBsrc = pGsrc + height * width; // blue component
-
-	// help image pointers
-	pRaid = aidImage.data();        // red component
-	pGaid = pRaid + height * width; // green component
-	pBaid = pGaid + height * width; // blue component
-
-	// destination image pointers
-	pRdest = pDstImage;               // red component
-	pGdest = pRdest + height * width; // green component
-	pBdest = pGdest + height * width; // blue component
+	
 
 	// Starting time
 	if (clock_gettime(CLOCK_REALTIME, &tStart)==-1) {
@@ -152,7 +151,7 @@ int main() {
 	dElapsedTimeS = (tEnd.tv_sec - tStart.tv_sec);
 	dElapsedTimeS += (tEnd.tv_nsec - tStart.tv_nsec) / 1e+9;
 
-	printf ("Tiempo de ejecución = %f\n", dElapsedTimeS);
+	printf ("Final execution time = %f\n", dElapsedTimeS);
 
 	CImg<data_t> dstImage(pDstImage, width, height, 1, nComp);
 
