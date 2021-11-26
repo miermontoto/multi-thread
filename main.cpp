@@ -32,20 +32,20 @@ void threadTask(ThreadParams params) {
 		// pointer initialization:
 
 		// source image pointers
-		float pRsrc = params._SOURCE.data();                  // red component
-		float pGsrc = pRsrc + params._height * params._width; // green component
-		float pBsrc = pGsrc + params._height * params._width; // blue component
+		float* pRsrc = params._SOURCE.data();                  // red component
+		float* pGsrc = pRsrc + params._height * params._width; // green component
+		float* pBsrc = pGsrc + params._height * params._width; // blue component
 
 		// help image pointers
-		float pRaid = params._HELP.data();                    // red component
-		float pGaid = pRaid + params._height * params._width; // green component
-		float pBaid = pGaid + params._height * params._width; // blue component
+		float* pRaid = params._HELP.data();                    // red component
+		float* pGaid = pRaid + params._height * params._width; // green component
+		float* pBaid = pGaid + params._height * params._width; // blue component
 
+		
 		// destination image pointers
-		float pRdest = params._DEST.data();                     // red component
-		float pGdest = pRdest + params._height * params._width; // green component
-		float pBdest = pGdest + params._height * params._width; // blue component
-
+		float* pRdest = params._SOURCE.data();                   // red component
+		float* pGdest = pRdest + params._height * params._width; // green component
+		float* pBdest = pGdest + params._height * params._width; // blue component
 
 		int red, blue, green; // temporal component initialization
 
@@ -132,7 +132,7 @@ int main() {
 			params[i]._width = width;
 			params[i]._numRows = rowsPerThread;
 			params[i]._startRow = i * rowsPerThread;
-			pthread_create(&(threads[i]), NULL, threadTask, &(params[i]));
+			pthread_create(&(threads[i]), NULL, threadTask(), &(params[i]));
 		}
 
 		// After all threads are finished, join the results in the resulting image.
