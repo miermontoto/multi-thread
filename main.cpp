@@ -27,7 +27,7 @@ const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
 void threadTask(ThreadParams params) {
 	//ThreadParams params = *((ThreadParams*) param);
-	for (uint i = params._startRow; i < params._width * params._height; i++) {
+	for (uint i = params._startRow; i < params._width * params._numRows; i++) {
 		// pointer initialization:
 
 		// source image pointers
