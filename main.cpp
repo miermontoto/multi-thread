@@ -9,7 +9,6 @@ using namespace std; // this removes the need of writing "std::"" every time.
 using namespace cimg_library;
 
 #define R 17 // number of times the algorithm is repeated.
-typedef float data_t;
 typedef struct {
 	CImg<float> _SOURCE;
 	CImg<float> _HELP;
@@ -72,11 +71,11 @@ void threadTask(ThreadParams params) {
 
 int main() {
 	// Both the source image and the aid image are loaded.
-	CImg<data_t> srcImage(SOURCE_IMG);
-	CImg<data_t> aidImage(HELP_IMG);
+	CImg<float> srcImage(SOURCE_IMG);
+	CImg<float> aidImage(HELP_IMG);
 
 	// Pointers and variables initialization.
-	data_t *pDstImage; // Resulting image's pointer.
+	float *pDstImage; // Resulting image's pointer.
 	uint width, height;
 	uint nComp;
 
@@ -102,7 +101,7 @@ int main() {
 	 */
 
 	// Allocate memory for the resulting image.
-	pDstImage = (data_t *) malloc (width * height * nComp * sizeof(data_t));
+	pDstImage = (float *) malloc (width * height * nComp * sizeof(float));
 	if (pDstImage == NULL) {
 		perror("Error: couldn't allocate memory for the destination image.");
 		exit(1);
@@ -153,7 +152,7 @@ int main() {
 
 	printf ("Final execution time = %f\n", dElapsedTimeS);
 
-	CImg<data_t> dstImage(pDstImage, width, height, 1, nComp);
+	CImg<float> dstImage(pDstImage, width, height, 1, nComp);
 
 	dstImage.save(DESTINATION_IMG);   // the image is saved to file.
 	dstImage.display(); // the resulting image is shown on screen.
