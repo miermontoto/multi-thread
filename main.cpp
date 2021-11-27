@@ -25,8 +25,8 @@ const char* SOURCE_IMG      = "bailarina.bmp"; // source image's file name.
 const char* HELP_IMG        = "background_V.bmp"; // aid image's file name.
 const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
-void threadTask(ThreadParams params) {
-	//ThreadParams params = *((ThreadParams*) param);
+void* threadTask(void* param) {
+	ThreadParams params = *(ThreadParams*) param;
 	for (uint i = params._startRow; i < params._width * params._numRows; i++) {
 		// pointer initialization:
 
@@ -131,7 +131,7 @@ int main() {
 			params[i]._width = width;
 			params[i]._numRows = rowsPerThread;
 			params[i]._startRow = i * rowsPerThread;
-			pthread_create(&(threads[i]), NULL, threadTask(), &(params[i]));
+			pthread_create(&(threads[i]), NULL, threadTask, &(params[i]));
 		}
 
 		// After all threads are finished, join the results in the resulting image.
