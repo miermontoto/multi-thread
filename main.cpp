@@ -66,6 +66,8 @@ void* threadTask(void* param) {
 		pGdest[i] = green;
 		pBdest[i] = blue;
 	}
+
+	return NULL;
 }
 
 
