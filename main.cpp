@@ -27,26 +27,29 @@ const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
 void* threadTask(void* param) {
 	ThreadParams params = *(ThreadParams*) param;
+
+	// pointer initialization:
+
+	// source image pointers
+	float* pRsrc = params._SOURCE.data();                  // red component
+	float* pGsrc = pRsrc + params._height * params._width; // green component
+	float* pBsrc = pGsrc + params._height * params._width; // blue component
+
+	// help image pointers
+	float* pRaid = params._HELP.data();                    // red component
+	float* pGaid = pRaid + params._height * params._width; // green component
+	float* pBaid = pGaid + params._height * params._width; // blue component
+
+	
+	// destination image pointers
+	float* pRdest = params._DEST;                   // red component
+	float* pGdest = pRdest + params._height * params._width; // green component
+	float* pBdest = pGdest + params._height * params._width; // blue component
+
+
 	for (int i = params._startRow * params._width;
 			 i < params._width * params._numRows; i++) {
-		// pointer initialization:
-
-		// source image pointers
-		float* pRsrc = params._SOURCE.data();                  // red component
-		float* pGsrc = pRsrc + params._height * params._width; // green component
-		float* pBsrc = pGsrc + params._height * params._width; // blue component
-
-		// help image pointers
-		float* pRaid = params._HELP.data();                    // red component
-		float* pGaid = pRaid + params._height * params._width; // green component
-		float* pBaid = pGaid + params._height * params._width; // blue component
-
 		
-		// destination image pointers
-		float* pRdest = params._SOURCE.data();                   // red component
-		float* pGdest = pRdest + params._height * params._width; // green component
-		float* pBdest = pGdest + params._height * params._width; // blue component
-
 		int red, blue, green; // temporal component initialization
 
 		// Algorithm
