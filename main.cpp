@@ -27,7 +27,8 @@ const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
 void* threadTask(void* param) {
 	ThreadParams params = *(ThreadParams*) param;
-	for (int i = params._startRow; i < params._width * params._numRows; i++) {
+	for (int i = params._startRow * params._width;
+			 i < params._width * params._numRows; i++) {
 		// pointer initialization:
 
 		// source image pointers
@@ -117,8 +118,7 @@ int main() {
 		exit(1);
 	}
 
-	// The algorithm repeats itself to be within time completition valid margins
-	// It should last between 5 and 10 seconds with this configuration.
+	// The algorithm repeats itself the same times as the single-threaded version
 	for(int i = 0; i < R; i++) {
 		pthread_t threads[numThreads];
 		const int rowsPerThread = height / numThreads;
@@ -152,7 +152,7 @@ int main() {
 	dElapsedTimeS = (tEnd.tv_sec - tStart.tv_sec);
 	dElapsedTimeS += (tEnd.tv_nsec - tStart.tv_nsec) / 1e+9;
 
-	printf ("Final execution time = %f\n", dElapsedTimeS);
+	printf("Final execution time = %f\n", dElapsedTimeS);
 
 	CImg<float> dstImage(pDstImage, width, height, 1, nComp);
 
