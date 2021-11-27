@@ -27,28 +27,29 @@ const char* DESTINATION_IMG = "result.bmp"; // resulting image's file name.
 
 void* threadTask(void* param) {
 	ThreadParams params = *(ThreadParams*) param;
+	int startingPoint = params._startRow * params._width;
+	// first pixel to be processed by the thread.
 
 	// pointer initialization:
 
 	// source image pointers
-	float* pRsrc = params._SOURCE.data();                  // red component
+	float* pRsrc = params._SOURCE.data() + startingPoint;  // red component
 	float* pGsrc = pRsrc + params._height * params._width; // green component
 	float* pBsrc = pGsrc + params._height * params._width; // blue component
 
 	// help image pointers
-	float* pRaid = params._HELP.data();                    // red component
+	float* pRaid = params._HELP.data() + startingPoint;    // red component
 	float* pGaid = pRaid + params._height * params._width; // green component
 	float* pBaid = pGaid + params._height * params._width; // blue component
 
 	
 	// destination image pointers
-	float* pRdest = params._DEST;                   // red component
+	float* pRdest = params._DEST + startingPoint;            // red component
 	float* pGdest = pRdest + params._height * params._width; // green component
 	float* pBdest = pGdest + params._height * params._width; // blue component
 
 
-	for (int i = params._startRow * params._width;
-			 i < params._width * params._numRows; i++) {
+	for (int i = 0; i < params._width * params._numRows; i++) {
 		
 		int red, blue, green; // temporal component initialization
 
@@ -162,7 +163,6 @@ int main() {
 	dstImage.save(DESTINATION_IMG);   // the image is saved to file.
 	dstImage.display(); // the resulting image is shown on screen.
 	free(pDstImage);    // the memory used by the pointers is freed.
-
 
 	return 0;
 }
