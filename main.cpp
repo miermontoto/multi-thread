@@ -10,8 +10,8 @@ using namespace cimg_library;
 
 #define R 17 // number of times the algorithm is repeated.
 typedef struct {
-	CImg<float> _SOURCE;
-	CImg<float> _HELP;
+	float* _SOURCE;
+	float* _HELP;
 	float* _DEST;
 	int _width;
 	int _height;
@@ -19,7 +19,7 @@ typedef struct {
 	int _numRows;
 } ThreadParams;
 
-const int numThreads = 4; // number of threads to use.
+const int numThreads = 8; // number of threads to use.
 
 const char* SOURCE_IMG      = "bailarina.bmp"; // source image's file name.
 const char* HELP_IMG        = "background_V.bmp"; // aid image's file name.
@@ -33,12 +33,12 @@ void* threadTask(void* param) {
 	// pointer initialization:
 
 	// source image pointers
-	float* pRsrc = params._SOURCE.data() + startingPoint;  // red component
+	float* pRsrc = params._SOURCE + startingPoint;  // red component
 	float* pGsrc = pRsrc + params._height * params._width; // green component
 	float* pBsrc = pGsrc + params._height * params._width; // blue component
 
 	// help image pointers
-	float* pRaid = params._HELP.data() + startingPoint;    // red component
+	float* pRaid = params._HELP + startingPoint;    // red component
 	float* pGaid = pRaid + params._height * params._width; // green component
 	float* pBaid = pGaid + params._height * params._width; // blue component
 
@@ -60,7 +60,6 @@ void* threadTask(void* param) {
 		blue = 255 - ((256 * (255 - pBaid[i])) / (pBsrc[i] + 1));
 
 		// Values are checked and trimmed.
-
 		red = max(min(red, 255), 0);
 		green = max(min(green, 255), 0);
 		blue = max(min(blue, 255), 0);
@@ -130,9 +129,9 @@ int main() {
 		ThreadParams params[numThreads];
 
 		for(int i = 0; i < numThreads; i++) {
-			params[i]._SOURCE = srcImage;
+			params[i]._SOURCE = srcImage.data();
 			params[i]._DEST = pDstImage;
-			params[i]._HELP = aidImage;
+			params[i]._HELP = aidImage.data();
 			params[i]._height = height;
 			params[i]._width = width;
 			params[i]._numRows = rowsPerThread;
